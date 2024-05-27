@@ -58,17 +58,3 @@ def analyze_comments(comments):
         else:
             sentiments['negative'] += 1
     return sentiments
-
-# Replace with the ID of the YouTube video you want to fetch comments for
-video_id = 'SWJmH3YcXk4'
-comments = get_video_comments(video_id)
-print(f'Fetched {len(comments)} comments')
-
-if comments:
-    sentiments = analyze_comments(comments)
-    print(f'Sentiment Analysis:')
-    print(f"Positive comments: {sentiments['positive']}")
-    print(f"Neutral comments: {sentiments['neutral']}")
-    print(f"Negative comments: {sentiments['negative']}")
-else:
-    print('No comments were fetched.')
