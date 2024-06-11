@@ -1,34 +1,32 @@
-# Author(s): Jason Page
-# Date: 5/10/2024
-# Description: This file is the main file for the program. It will run the program and call the necessary functions to track social media sentiment.
-
-import os, sys, time
+import os
 from scraper import Scraper
-from sentiment import get_video_comments, analyze_comments
+from sentiment import SentimentAnalyzer
+from dotenv import load_dotenv
 
 def main():
-    # Get the video ID from the command line arguments
-    if len(sys.argv) < 2:
-        print('Usage: python main.py <video_id>')
-        sys.exit(1)
+    # Load the API key from the .env file
+    load_dotenv()
+    api_key = os.getenv('YOUTUBE_API_KEY')
+    if not api_key:
+        raise ValueError("No API key found. Please check your .env file.")
     
-    video_id = sys.argv[1]
+    # Initialize the Scraper and SentimentAnalyzer
+    scraper = Scraper(api_key)
+    analyzer = SentimentAnalyzer()
     
-    # Scrape comments from the video
-    print(f'Scraping comments for video ID: {video_id}')
-    comments = get_video_comments(video_id)
+    # Get comments from a YouTube video
+    video_id = 'ek2yOqAIYuU' # TODO: Make this dynamic by automatically fetching the video IDs using 
+    # 
+    comments = scraper.get_video_comments(video_id)
     
-    if not comments:
-        print('No comments found. Exiting program.')
-        sys.exit(1)
-    
-    # Analyze the comments
-    print('Analyzing comments...')
-    sentiments = analyze_comments(comments)
+    # Analyze the sentiment of the comments
+    sentiments = analyzer.analyze_comments(comments)
     
     # Print the sentiment analysis results
-    print('Sentiment analysis results:')
-    print(f'Positive comments: {sentiments["positive"]}')
-    print(f'Neutral comments: {sentiments["neutral"]}')
-    print(f'Negative comments: {sentiments["negative"]}')
-
+    print('Sentiment Analysis Results:')
+    print(f'Positive: {sentiments["positive"]}')
+    print(f'Neutral: {sentiments["neutral"]}')
+    print(f'Negative: {sentiments["negative"]}')
+    
+if __name__ == '__main__':
+    main()
