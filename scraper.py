@@ -1,6 +1,3 @@
-import os
-import requests
-from bs4 import BeautifulSoup # pip install beautifulsoup4
 from dotenv import load_dotenv
 from googleapiclient.discovery import build
 
@@ -27,3 +24,24 @@ class Scraper:
         except Exception as e:
             print(f'An error occurred while fetching comments: {e}')
             return []
+        
+
+    def get_video_ids(self, channel_id, max_results=10):
+        """Get video IDs from a YouTube channel"""
+        try:
+            video_ids = []
+            youtube = build('youtube', 'v3', developerKey=self.api_key)
+            response = youtube.search().list(
+                part='snippet',
+                channelId=channel_id,
+                maxResults=max_results
+            ).execute()
+            for item in response['items']:
+                if item['id']['kind'] == 'youtube#video':
+                    video_ids.append(item['id']['videoId'])
+            return video_ids
+        except Exception as e:
+            print(f'An error occurred while fetching video IDs: {e}')
+            return []
+        
+
